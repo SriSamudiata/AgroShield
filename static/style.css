@@ -1,0 +1,315 @@
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    background:
+        #f4f7f2;
+
+    color:
+        #26352a;
+
+}
+
+
+.container {
+
+    width: 90%;
+
+    max-width: 900px;
+
+    margin:
+        30px auto;
+
+}
+
+
+header {
+
+    text-align: center;
+
+    margin-bottom:
+        30px;
+
+}
+
+
+header h1 {
+
+    font-size:
+        42px;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+header p {
+
+    color:
+        #66756a;
+
+}
+
+
+.card,
+.result-card {
+
+    background:
+        white;
+
+    border-radius:
+        18px;
+
+    padding:
+        25px;
+
+    margin-bottom:
+        20px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.06);
+
+}
+
+
+label {
+
+    display:
+        block;
+
+    margin-top:
+        18px;
+
+    margin-bottom:
+        8px;
+
+    font-weight:
+        bold;
+
+}
+
+
+input[type="text"],
+input[type="file"] {
+
+    width:
+        100%;
+
+    padding:
+        13px;
+
+    border:
+        2px solid #d8e2d8;
+
+    border-radius:
+        10px;
+
+    background:
+        white;
+
+}
+
+
+button {
+
+    border:
+        none;
+
+    border-radius:
+        12px;
+
+    padding:
+        14px 22px;
+
+    margin-top:
+        20px;
+
+    cursor:
+        pointer;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    background:
+        #315c45;
+
+    color:
+        white;
+
+}
+
+
+button:hover {
+
+    opacity:
+        0.9;
+
+}
+
+
+button:disabled {
+
+    opacity:
+        0.6;
+
+    cursor:
+        not-allowed;
+
+}
+
+
+.location {
+
+    margin-top:
+        20px;
+
+    padding:
+        18px;
+
+    border:
+        2px dashed #b8cbbb;
+
+    border-radius:
+        14px;
+
+}
+
+
+.location button {
+
+    margin-top:
+        0;
+
+    background:
+        #4b6680;
+
+}
+
+
+.location p {
+
+    margin-bottom:
+        0;
+
+    color:
+        #68776c;
+
+}
+
+
+#detectButton {
+
+    width:
+        100%;
+
+    background:
+        #d47a35;
+
+}
+
+
+.results {
+
+    margin-top:
+        30px;
+
+}
+
+
+.result-card h3 {
+
+    margin-top:
+        0;
+
+}
+
+
+.result-card p {
+
+    line-height:
+        1.6;
+
+}
+
+
+#diagnosisResult {
+
+    font-size:
+        19px;
+
+    font-weight:
+        bold;
+
+}
+
+
+#continueButton {
+
+    width:
+        100%;
+
+    background:
+        #596b9a;
+
+}
+
+
+footer {
+
+    text-align:
+        center;
+
+    margin:
+        35px 0;
+
+    color:
+        #748078;
+
+    font-size:
+        14px;
+
+}
+
+
+@media (max-width: 600px) {
+
+    .container {
+
+        width:
+            94%;
+
+    }
+
+
+    header h1 {
+
+        font-size:
+            32px;
+
+    }
+
+
+    .card,
+    .result-card {
+
+        padding:
+            18px;
+
+    }
+
+}

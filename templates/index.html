@@ -1,0 +1,619 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AgroShield</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <header>
+
+        <h1>🌱 AgroShield</h1>
+
+        <p>
+            Smart Crop Health Assistant
+        </p>
+
+    </header>
+
+
+
+    <section class="card">
+
+        <h2>
+            Check Your Crop
+        </h2>
+
+
+        <form
+            id="assessmentForm"
+            enctype="multipart/form-data">
+
+
+            <!-- CROP -->
+
+            <label for="crop">
+                Crop Name
+            </label>
+
+            <input
+                type="text"
+                id="crop"
+                name="crop"
+                placeholder="Example: Paddy"
+                required
+            >
+
+
+            <!-- IMAGE -->
+
+            <label for="image">
+                Upload Crop Image
+            </label>
+
+            <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                required
+            >
+
+
+            <!-- LOCATION -->
+
+            <div class="location">
+
+                <button
+                    type="button"
+                    id="locationButton">
+
+                    📍 Use My Location
+
+                </button>
+
+
+                <p id="locationStatus">
+                    Location not detected
+                </p>
+
+            </div>
+
+
+            <input
+                type="hidden"
+                id="latitude"
+                name="latitude"
+            >
+
+
+            <input
+                type="hidden"
+                id="longitude"
+                name="longitude"
+            >
+
+
+            <!-- DETECT -->
+
+            <button
+                type="submit"
+                id="detectButton">
+
+                🔍 Detect & Assess
+
+            </button>
+
+
+        </form>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         RESULTS
+    =================================================== -->
+
+    <section
+        id="results"
+        class="results"
+        style="display:none;">
+
+
+        <h2>
+            Crop Assessment
+        </h2>
+
+
+        <!-- WEATHER -->
+
+        <div class="result-card">
+
+            <h3>
+                🌦️ Weather
+            </h3>
+
+            <div id="weatherResult"></div>
+
+        </div>
+
+
+        <!-- OBSERVATIONS -->
+
+        <div class="result-card">
+
+            <h3>
+                👁️ Observations
+            </h3>
+
+            <div id="observationsResult"></div>
+
+        </div>
+
+
+        <!-- DIAGNOSIS -->
+
+        <div class="result-card">
+
+            <h3>
+                🔬 Possible Problem
+            </h3>
+
+            <div id="diagnosisResult"></div>
+
+        </div>
+
+
+        <!-- CAUSES -->
+
+        <div class="result-card">
+
+            <h3>
+                ⚠️ Possible Causes
+            </h3>
+
+            <div id="causesResult"></div>
+
+        </div>
+
+
+        <!-- SECOND BUTTON -->
+
+        <button
+            id="continueButton"
+            type="button">
+
+            Continue to Action Plan →
+
+        </button>
+
+
+
+        <!-- ACTION PLAN -->
+
+        <div
+            id="actionPlan"
+            style="display:none;">
+
+
+            <div class="result-card">
+
+                <h3>
+                    🛠️ What To Do
+                </h3>
+
+                <div id="whatResult"></div>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    🕐 When To Act
+                </h3>
+
+                <div id="whenResult"></div>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    🛡️ Crop Saving Plan
+                </h3>
+
+                <div id="savingResult"></div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <footer>
+
+        <p>
+            AgroShield • Preliminary crop-health guidance
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// LOCATION
+// =====================================================
+
+const locationButton =
+    document.getElementById(
+        "locationButton"
+    );
+
+
+const locationStatus =
+    document.getElementById(
+        "locationStatus"
+    );
+
+
+const latitudeInput =
+    document.getElementById(
+        "latitude"
+    );
+
+
+const longitudeInput =
+    document.getElementById(
+        "longitude"
+    );
+
+
+locationButton.addEventListener(
+    "click",
+    function () {
+
+
+        if (!navigator.geolocation) {
+
+            locationStatus.innerText =
+                "Location is not supported.";
+
+            return;
+
+        }
+
+
+        locationStatus.innerText =
+            "Getting your location...";
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            function (position) {
+
+
+                latitudeInput.value =
+                    position.coords.latitude;
+
+
+                longitudeInput.value =
+                    position.coords.longitude;
+
+
+                locationStatus.innerText =
+                    "✓ Location detected";
+
+
+                locationButton.innerText =
+                    "Location Ready";
+
+
+            },
+
+
+            function () {
+
+                locationStatus.innerText =
+                    "Location permission denied.";
+
+            }
+
+        );
+
+    }
+);
+
+
+
+// =====================================================
+// FORM
+// =====================================================
+
+const form =
+    document.getElementById(
+        "assessmentForm"
+    );
+
+
+const detectButton =
+    document.getElementById(
+        "detectButton"
+    );
+
+
+const results =
+    document.getElementById(
+        "results"
+    );
+
+
+form.addEventListener(
+    "submit",
+    async function (event) {
+
+
+        event.preventDefault();
+
+
+        if (
+            !latitudeInput.value ||
+            !longitudeInput.value
+        ) {
+
+            alert(
+                "Please click Use My Location first."
+            );
+
+            return;
+
+        }
+
+
+        detectButton.disabled =
+            true;
+
+
+        detectButton.innerText =
+            "Checking...";
+
+
+        const formData =
+            new FormData(form);
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/assess",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Assessment failed."
+                );
+
+            }
+
+
+            // -----------------------------------------
+            // WEATHER
+            // -----------------------------------------
+
+            document.getElementById(
+                "weatherResult"
+            ).innerHTML =
+                data.weather_risk
+                    .map(
+                        item =>
+                            `<p>• ${item}</p>`
+                    )
+                    .join("");
+
+
+            // -----------------------------------------
+            // OBSERVATIONS
+            // -----------------------------------------
+
+            document.getElementById(
+                "observationsResult"
+            ).innerHTML =
+                data.visual_evidence
+                    .map(
+                        item =>
+                            `<p>• ${item}</p>`
+                    )
+                    .join("");
+
+
+            // -----------------------------------------
+            // DIAGNOSIS
+            // -----------------------------------------
+
+            document.getElementById(
+                "diagnosisResult"
+            ).innerText =
+                data.diagnosis;
+
+
+            // -----------------------------------------
+            // CAUSES
+            // -----------------------------------------
+
+            document.getElementById(
+                "causesResult"
+            ).innerHTML =
+                data.possible_causes
+                    .map(
+                        item =>
+                            `<p>• ${item}</p>`
+                    )
+                    .join("");
+
+
+            // -----------------------------------------
+            // WHAT TO DO
+            // -----------------------------------------
+
+            document.getElementById(
+                "whatResult"
+            ).innerHTML =
+                data.what_to_do_now
+                    .map(
+                        item =>
+                            `<p>• ${item}</p>`
+                    )
+                    .join("");
+
+
+            // -----------------------------------------
+            // WHEN
+            // -----------------------------------------
+
+            document.getElementById(
+                "whenResult"
+            ).innerText =
+                data.when_to_act;
+
+
+            // -----------------------------------------
+            // SAVING PLAN
+            // -----------------------------------------
+
+            document.getElementById(
+                "savingResult"
+            ).innerHTML =
+                data.crop_saving_plan
+                    .map(
+                        item =>
+                            `<p>• ${item}</p>`
+                    )
+                    .join("");
+
+
+            // -----------------------------------------
+            // SHOW RESULTS
+            // -----------------------------------------
+
+            results.style.display =
+                "block";
+
+
+            results.scrollIntoView({
+                behavior: "smooth"
+            });
+
+
+        }
+
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                error.message
+            );
+
+        }
+
+
+        finally {
+
+            detectButton.disabled =
+                false;
+
+            detectButton.innerText =
+                "🔍 Detect & Assess";
+
+        }
+
+    }
+);
+
+
+
+// =====================================================
+// SECOND BUTTON
+// =====================================================
+
+const continueButton =
+    document.getElementById(
+        "continueButton"
+    );
+
+
+const actionPlan =
+    document.getElementById(
+        "actionPlan"
+    );
+
+
+continueButton.addEventListener(
+    "click",
+    function () {
+
+
+        actionPlan.style.display =
+            "block";
+
+
+        continueButton.style.display =
+            "none";
+
+
+        actionPlan.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>
+```
